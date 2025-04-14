@@ -50,17 +50,16 @@ mod display {
     use comfy_table::Row;
     use humantime::format_duration;
     use serde::Serialize;
-
     use fluvio::metadata::objects::Metadata;
     use fluvio::metadata::topic::TopicSpec;
-
+    use log::debug;
     use crate::common::output::{
         OutputType, OutputError, DescribeObjectHandler, KeyValOutputHandler, TableOutputHandler,
         Terminal,
     };
 
     #[allow(clippy::redundant_closure)]
-    // Connect to Kafka Controller and query server for topic
+    // Connect to Controller and query server for topic
     pub async fn describe_topics<O>(
         topics: Vec<Metadata<TopicSpec>>,
         output_type: OutputType,
@@ -69,6 +68,7 @@ mod display {
     where
         O: Terminal,
     {
+        debug!("describe topics: {:#?}", topics);
         let topic_list: Vec<TopicMetadata> = topics.into_iter().map(|m| TopicMetadata(m)).collect();
         out.describe_objects(&topic_list, output_type)
     }
